@@ -37,39 +37,28 @@ contract FundMe {
         //what is a revert?
         //revert undo any actions that have been done, and send the remaining gas back
 
-        require(
-            msg.value.getConversionRate(s_priceFeed) >= MINIMUM_USD,
-            "minimum value should be 5$"
-        ); // msg.value is passed as an argument inside the getConversionRate function in the library
+        require(msg.value.getConversionRate(s_priceFeed) >= MINIMUM_USD, "minimum value should be 5$"); // msg.value is passed as an argument inside the getConversionRate function in the library
         s_funders.push(msg.sender);
-        s_addressToAmountFunded[msg.sender] =
-            s_addressToAmountFunded[msg.sender] +
-            msg.value;
+        s_addressToAmountFunded[msg.sender] = s_addressToAmountFunded[msg.sender] + msg.value;
     }
 
     function getVersion() public view returns (uint256) {
         return s_priceFeed.version();
     }
 
-     function cheaperWithdraw() public OnlyOwner {
+    function cheaperWithdraw() public OnlyOwner {
         uint256 fundersLength = s_funders.length;
         for (uint256 funderIndex = 0; funderIndex < fundersLength; funderIndex++) {
             address funder = s_funders[funderIndex];
             s_addressToAmountFunded[funder] = 0;
         }
         s_funders = new address[](0);
-        (bool callSuccess, ) = payable(msg.sender).call{
-            value: address(this).balance
-        }("");
+        (bool callSuccess,) = payable(msg.sender).call{value: address(this).balance}("");
         require(callSuccess, "Call failed");
     }
 
     function withdraw() public OnlyOwner {
-        for (
-            uint256 funderIndex = 0;
-            funderIndex < s_funders.length;
-            funderIndex++
-        ) {
+        for (uint256 funderIndex = 0; funderIndex < s_funders.length; funderIndex++) {
             address funder = s_funders[funderIndex];
             s_addressToAmountFunded[funder] = 0;
         }
@@ -85,9 +74,7 @@ contract FundMe {
         bool sendSuccess = payable(msg.sender).send(address(this).balance);
         require(sendSuccess, "Send failed");*/
 
-        (bool callSuccess, ) = payable(msg.sender).call{
-            value: address(this).balance
-        }("");
+        (bool callSuccess,) = payable(msg.sender).call{value: address(this).balance}("");
         require(callSuccess, "Call failed");
     }
 

@@ -20,7 +20,7 @@ contract InteractionsTest is Test {
         vm.deal(USER, USER_BALANCE);
     }
 
-     function testUserCanFundAndOwnerWithdraw() public {
+    function testUserCanFundAndOwnerWithdraw() public {
         uint256 preUserBalance = address(USER).balance;
         uint256 preOwnerBalance = address(fundMe.getOwner()).balance;
 
